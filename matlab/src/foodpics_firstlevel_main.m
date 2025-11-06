@@ -17,6 +17,8 @@ if ~strcmp(inp.fwhm, '')                                                        
     ss=1;
     fwhm=str2num(inp.fwhm);
 end
+mthresh=str2num(inp.mthresh);   % default should be 0.8
+hpf=str2num(inp.hpf);           % default should be 128
 batchfile_ss=fullfile(inp.out_dir,'foodpics_smooth_batch.mat');                     % save batch job for smoothing here
 batchfile=fullfile(inp.out_dir,'foodpics_firstlevel_batch.mat');                    % save batch job here
 
@@ -74,7 +76,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess(1).cond = struct('name', {}, 'onset', {}
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).multi = {inp.multi_conds1};
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).regress = struct('name', {}, 'val', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess(1).multi_reg = {rp_file1};
-matlabbatch{1}.spm.stats.fmri_spec.sess(1).hpf = 128;
+matlabbatch{1}.spm.stats.fmri_spec.sess(1).hpf = hpf;
 
 % setup fmri2
 if multi_fmri   
@@ -91,7 +93,7 @@ matlabbatch{1}.spm.stats.fmri_spec.fact = struct('name', {}, 'levels', {});
 matlabbatch{1}.spm.stats.fmri_spec.bases.hrf.derivs = [0 0];
 matlabbatch{1}.spm.stats.fmri_spec.volt = 1;
 matlabbatch{1}.spm.stats.fmri_spec.global = 'None';
-matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.2;
+matlabbatch{1}.spm.stats.fmri_spec.mthresh = mthresh;
 matlabbatch{1}.spm.stats.fmri_spec.mask = {''};
 matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 

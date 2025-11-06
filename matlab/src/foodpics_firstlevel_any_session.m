@@ -8,34 +8,38 @@ function foodpics_firstlevel_any_session(subject_id, session_id, run_list)
 %   to process only run 1: [1]
 %   to process only run 2: [2]
 %
-% This script runs a pipeline to analyze the ADAK foodpics data
-% based on parameters determined by KC. The pipeline includes:
+% This script runs a pipeline to analyze the SALAD foodpics data
 % Changes from adak_foodpics_spm:
 % - Saves residuals if needed for AFNI analysis
 % - Changed SPM masking threshold from 0.8 to 0.2
-% - Saves output in folder 'adak_foodpics_kc'
+% - Saves output in folder 'salad_foodpics'
 
 if nargin ~= 3 
     error('Must specify subject_id, session_id and run_list');
 end
 
 %% Study specific variables to specify data folders and SPM settings
+study_id='salad';
 task_id='foodpics';
-study_dir='/home/data/images/adak';								                % main study directory
-onset_dir=fullfile(study_dir, 'code', ['adak_' task_id '_kc'],'matlab','src');  % directory with SPM onsets - same for all subjects in this study
+study_dir=fullfile('/home/data/images', study_id);                              % main study directory
+onset_dir=fullfile(study_dir, 'code', [study_id '_' task_id],'matlab','src');   % directory with SPM onsets - same for all subjects in this study
 bids_dir=fullfile(study_dir,'data','bids_data');					            % bids data directory
-preproc_dir=fullfile(bids_dir, 'derivatives','fmriprep_3mm');		            % directory with preprocessed data
-output_dir=fullfile(bids_dir,'derivatives',['adak_' task_id '_kc']);            % analysis output directory for fmriprep 3mm data
+preproc_dir=fullfile(bids_dir, 'derivatives','fmriprep_ses01t1_nofmap');        % directory with preprocessed data
+output_dir=fullfile(bids_dir,'derivatives',[study_id '_' task_id]);             % analysis output directory for fmriprep data
 
-n_vols='172';                           % each run should contain 172 volumes
-tr='2';                                 % repetition time = 2s
+n_vols='344';                           % each run should contain 344 volumes
+tr='1';                                 % repetition time = 1s
 fwhm='6';                               % FWHM kernel size for smoothing
-output_space='MNI152NLin6Asym_res-07';  % Use fmriprep output in MNI152NLin6Asym template space with custom 3mm resolution
+mthresh='0.2';                          % Change masking threshold to 0.2 for ventral regions
+hpf='128';                              % Use default highpass filter
+output_space='MNI152NLin6Asym_res-02';  % Use fmriprep output in MNI152NLin6Asym template space with custom 3mm resolution
 
 disp(['Processing subject: ' subject_id ' session: ' session_id]);
 disp(['n_vols: ' n_vols]);
 disp(['tr: ' tr]);
 disp(['fwhm: ' fwhm]);
+disp(['mthresh: ' mthresh]);
+disp(['hpf: ' hpf]);
 disp(['output_space: ' output_space]);
 
 %% Make output folder if it doesn't exist
@@ -89,6 +93,8 @@ if length(run_list) == 2
         'tr', tr, ...
         'n_vols', n_vols, ...
         'fwhm', fwhm, ...
+        'mthresh', mthresh, ...
+        'hpf', hpf, ...
         'out_dir', out_dir)
 else 
     foodpics_firstlevel('fmri1_nii', fullfile(out_dir, [subject_id '_' session_id '_' 'task-' task_id '_' 'run-0' run_number '_' 'space-' output_space '_' 'desc-preproc_bold.nii']), ...
@@ -97,6 +103,8 @@ else
         'tr', tr, ...
         'n_vols', n_vols, ...
         'fwhm', fwhm, ...
+        'mthresh', mthresh, ...
+        'hpf', hpf, ...
         'out_dir', out_dir)
 
 end

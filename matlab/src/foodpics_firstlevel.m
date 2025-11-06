@@ -37,6 +37,12 @@ addOptional(P,'n_vols','');
 % Spatial smoothing kernel fwhm
 addOptional(P,'fwhm','');
 
+% SPM masking threshold, default=0.8
+addOptional(P,'mthresh','0.8');
+
+% Highpass filter, default=128
+addOptional(P,'hpf','128');
+
 % Where to store outputs
 addOptional(P,'out_dir','/OUTPUTS');
 
