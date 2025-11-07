@@ -78,8 +78,9 @@ for r = 1:length(run_list)
 
 end
 
-%% Unzip nifti files for SPM
-gunzip(fullfile(out_dir,'*.gz'))
+%% Unzip nifti files for SPM and then delete gzipped files
+gunzip(fullfile(out_dir,'*.gz'));
+delete(fullfile(out_dir,'*.gz'));
 
 
 %% Call firstlevel function
@@ -108,3 +109,7 @@ else
         'out_dir', out_dir)
 
 end
+
+%% Gzip residual nifti files and then delete unzipped residual files
+gzip(fullfile(out_dir,'Res_*.nii'));
+delete(fullfile(out_dir,'Res_*.nii'));
